@@ -8,6 +8,7 @@ class CTemporaryVoiceChannel {
     nameStartWith;
     nameStartWithTemporary;
     reason;
+    channelName;
     constructor(client, options) {
         this.client = client;
         this.options = options;
@@ -19,6 +20,7 @@ class CTemporaryVoiceChannel {
             ? options?.nameStartWithTemporary
             : "* ";
         this.reason = options?.reason ? options?.reason : "powered by DS112";
+        this.channelName = options?.channelName ?? 'none'
     }
     async autoCreateTemporaryVoiceChannel() {
         this.client.on("voiceStateUpdate", (oldState, newState) => {
@@ -78,7 +80,7 @@ class CTemporaryVoiceChannel {
                 newState.channel.name.startsWith(this.nameStartWith)) {
                 const everyone = newState.guild.roles.everyone;
                 newState.guild.channels
-                    .create(`${this.nameStartWithTemporary}${newState?.member?.user.username}`, {
+                    .create(`${this.nameStartWithTemporary}${this.channelName !== 'none' ? this.channelName : newState?.member?.user.username}`, {
                     bitrate: newState.channel.bitrate || 64000,
                     type: "GUILD_VOICE",
                     topic: this.reason,
