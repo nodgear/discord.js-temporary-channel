@@ -8,6 +8,7 @@ import {
 type TOptions = {
     userLimit?: number;
     nameStartWith?: string;
+    channelName?: string;
     nameStartWithTemporary?: string;
     reason?: string;
     guildId?: number | string;
@@ -21,6 +22,7 @@ export default class CTemporaryVoiceChannel {
     protected nameStartWith: string;
     protected nameStartWithTemporary: string;
     protected reason: string;
+    protected channelName: string;
 
     constructor(client: Client, options?: TOptions) {
         this.client = client;
@@ -33,6 +35,7 @@ export default class CTemporaryVoiceChannel {
             ? options?.nameStartWithTemporary
             : "* ";
         this.reason = options?.reason ? options?.reason : "powered by DS112";
+        this.channelName = options?.channelName ?? 'none'
     }
 
     public async autoCreateTemporaryVoiceChannel() {
@@ -125,7 +128,7 @@ export default class CTemporaryVoiceChannel {
                     const everyone = newState.guild.roles.everyone;
                     newState.guild.channels
                         .create(
-                            `${this.nameStartWithTemporary}${newState?.member?.user.username}`,
+                            `${this.nameStartWithTemporary}${this.channelName !== 'none' ? this.channelName : newState?.member?.user.username}`,
                             {
                                 bitrate: newState.channel.bitrate || 64000,
                                 type: "GUILD_VOICE",
